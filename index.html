@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1712950_zrrrbxxpu3.css">
+    <title>Dialog组件</title>
+    <style>
+        .contianer {
+            max-width: 800px;
+            box-shadow: 0 0 3px 0 rgba(0,0,0,.3);
+            padding: 10px 20px;
+            border-radius: 3px;
+            margin:30px auto;
+        }
+        .dialog {
+            position: fixed;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            background:rgba(0,0,0,0.3);
+            display: none;
+            opacity: 0;
+            transition:all .3s;
+        }
+        .dialog.show{
+            display: block;
+        }
+        .dialog.appear {
+            opacity: 1;
+        }
+
+        .dialog .main {
+            position: absolute;
+            top:50%;
+            left:50%;
+            transform: translate(-50%,-100%);
+            box-shadow: 0 0 4px 0 rgba(0,0,0,.3);
+            padding:16px;
+            width: 30%;
+            border-radius: 4px;
+            background:#fff;
+            opacity: 0;
+            transition:all .3s;
+        }
+        .dialog.appear .main{
+            transform: translate(-50%,-50%);
+            opacity: 1;
+        }
+        .dialog .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size:18px;
+        }
+        .dialog .header .iconfont {
+            margin-left:auto;
+            cursor: pointer;
+            color:rgb(134, 134, 134);
+        }
+        .dialog .content {
+            padding:10px 0;
+        }
+        .dialog .footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .button {
+            padding:5px 16px;
+            font-size:14px;
+            font-weight: 500;
+            color:#303030;
+            border:1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+            background: #fff;
+            cursor: pointer;
+        }
+        .button:hover {
+            border-color:lightskyblue;
+            color:lightskyblue;
+        }
+        .dialog .footer .button {
+            margin-left:10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="contianer">
+        <h2>Dialog</h2>
+        <button class="button open-dialog">打开弹框</button>
+        <div class="dialog">
+            <div class="main">
+                <div class="header">提示<span class="iconfont icon-quxiao"></span></div>
+                <div class="content">这里是提示信息</div>
+                <div class="footer">
+                    <buttom class="button btn-cancel">取消</buttom>
+                    <buttom class="button btn-confrim">确定</buttom>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    class Dialog{
+        constructor($root,options={}){
+            this.$root = $root
+            this.options = options
+            this.onCancel = options.onCancel || function(){}
+            this.onOk = options.onOk || function(){}
+            this.bind()
+        }
+        bind(){
+            let self = this
+            this.$root.querySelector('.icon-quxiao').onclick = function(){
+                self.hide()
+            }
+            this.$root.querySelector('.btn-cancel').onclick = function(){
+                self.hide()
+                self.onCancel()
+            }
+            this.$root.querySelector('.btn-confrim').onclick = function(){
+                self.hide()
+                self.onOk()
+            }
+        }
+        hide(){
+            //先变透明再消失
+            this.$root.classList.remove('appear')
+            setTimeout(() => {
+                this.$root.classList.remove('show')
+            }, 300);
+            
+        }
+        show(){
+            //先出现，变不透明
+            this.$root.classList.add('show')
+            setTimeout(() => {
+                this.$root.classList.add('appear')
+            }, 30);
+            
+        }
+    }
+    let dialog = new Dialog(document.querySelector('.dialog'),{
+        onCancel(){
+            console.log('你点击了取消')
+        },
+        onOk(){
+            console.log('你点击了确认')
+        }
+    })
+    let $open = document.querySelector('.open-dialog')
+    $open.onclick = function(e){
+        dialog.show()
+    }
+</script>
